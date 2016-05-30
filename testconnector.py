@@ -24,13 +24,20 @@ cur_users = list();
 k =-1;
 
 while row is not None:
-    u = row[3];
+    u = row[3]; ## fb_id
+
+    ## 
+    ## renaming the first fb_id to be 0th row
+    ## second fb_id that comes up is 1th row so on
+    ##
     if u not in cur_users:
         cur_users.append( u )
         k = k + 1
         user_row = k
-        #print( str(k) + ' ' + str(u) )
+        ## save the fb_id --> row i correspondence in a file
         fkey.write(str(k) + ' ' + str(u) + '\n')
+    ##
+    ## if fb_id has appear already, use the previously assigned number
     else:
         user_row = cur_users.index(u)
         
