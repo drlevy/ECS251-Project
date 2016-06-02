@@ -3,6 +3,7 @@ import mysql.connector
 import sys
 from collections import defaultdict
 
+
 fkey = open('user_keys_Snowden2.txt', 'w')
 fmat = open('adj_matrix_Snowden2.txt', 'w')
 fdata = open('fdata_Snowden2.txt', 'w')
@@ -46,12 +47,12 @@ while row is not None:
         user_row = k
         ## save the fb_id --> row i correspondence in a file
         fkey.write(str(k) + ' ' + str(u) + '\n')
-
     ## if fb_id has appear already, use the previously assigned number
     else:
         user_row = cur_users.index(u)
 
-    d[row[1]].append(user_row)
+    if user_row not in d[row[1]]:
+        d[row[1]].append(user_row)
     fdata.write(str(row[1]) + ' ' + str(user_row) + '\n')
     row = cursor.fetchone()
 
@@ -63,13 +64,20 @@ d_likes = dict()
 for post, users in d.iteritems():
     for i in users:
         for j in users:
-            d_likes[i * mat_size + j] += 1
+            idx = i*mat_size +j
+            if ( idx not in d_likes):
+                d_likes[idx] = 1;
+            else:
+                d_likes[idx] += 1;
 
-for k, v in d_likes:
-    j = k % mat_size
-    i = k / mat_size
+for key, value in d_likes.iteritems():
+    j = key % mat_size
+    i = key / mat_size
     ## sparse matrix notation: i j value
-    fmat.write(str(i) + ' ' + str(j) + ' ' + str(v) + '\n')
+    fmat.write(str(i) + ' ' + str(j) + ' ' + str(value) + '\n')
 
+fkey.close()
+fmat.close();
+fdata.close();
 cursor.close()
 cnx.close()
