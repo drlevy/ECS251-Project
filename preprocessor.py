@@ -36,18 +36,18 @@ cur_users = list()
 k = -1
 
 while row is not None:
-    ## fb_id
+    # fb_id
     u = row[3]
 
-    ## renaming the first fb_id to be 0th row
-    ## second fb_id that comes up is 1th row so on
+    # renaming the first fb_id to be 0th row
+    # second fb_id that comes up is 1th row so on
     if u not in cur_users:
         cur_users.append(u)
-        k = k + 1
+        k += 1
         user_row = k
-        ## save the fb_id --> row i correspondence in a file
+        # save the fb_id --> row i correspondence in a file
         fkey.write(str(k) + ' ' + str(u) + '\n')
-    ## if fb_id has appear already, use the previously assigned number
+    # if fb_id has appear already, use the previously assigned number
     else:
         user_row = cur_users.index(u)
 
@@ -65,19 +65,19 @@ for post, users in d.iteritems():
     for i in users:
         for j in users:
             idx = i*mat_size +j
-            if ( idx not in d_likes):
-                d_likes[idx] = 1;
+            if idx not in d_likes:
+                d_likes[idx] = 1
             else:
-                d_likes[idx] += 1;
+                d_likes[idx] += 1
 
-for key, value in d_likes.iteritems():
+for key, value in d_likes.items():
     j = key % mat_size
     i = key / mat_size
-    ## sparse matrix notation: i j value
+    # sparse matrix notation: i j value
     fmat.write(str(i) + ' ' + str(j) + ' ' + str(value) + '\n')
 
 fkey.close()
-fmat.close();
-fdata.close();
+fmat.close()
+fdata.close()
 cursor.close()
 cnx.close()

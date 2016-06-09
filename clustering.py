@@ -3,15 +3,15 @@ import matplotlib.pyplot as plt
 
 G = nx.Graph()
 
-adjmat = open('adj_matrix_Snowden2.txt', 'r');
+adjmat = open('adj_matrix_Snowden2.txt', 'r')
 
 
 for line in adjmat:
     line = line.strip()
     columns = line.split()
-    i = columns[0];
-    j = columns[1];
-    w = columns[2];
+    i = columns[0]
+    j = columns[1]
+    w = columns[2]
     G.add_edge(i, j, weight=w)
 
 # nx.draw(G)
