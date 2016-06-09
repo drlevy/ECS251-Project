@@ -56,12 +56,12 @@ while row is not None:
     fdata.write(str(row[1]) + ' ' + str(user_row) + '\n')
     row = cursor.fetchone()
 
-print('Last row is: ' + str(row) + '\n.')
+print('Last row is: ' + str(row) + '\n')
 
 mat_size = k + 1
 d_likes = dict()
 
-for post, users in d.iteritems():
+for post, users in d.items():
     for i in users:
         for j in users:
             idx = i*mat_size +j
