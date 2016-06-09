@@ -19,16 +19,16 @@ cnx = mysql.connector.connect(
 )
 
 if cnx.is_connected():
-    print('Connected to MySQL database')
+    print('Connected to MySQL database.')
 else:
-    print('Could not connect to db')
+    print('Could not connect to db.')
     sys.exit()
 
 cursor = cnx.cursor()
-cursor.execute("SELECT * FROM nyt.likedby WHERE likedby.fb_id"
-               + " IN (SELECT comment.fb_id FROM nyt.comment, nyt.post"
-               + " WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%') "
-               + " AND (post.id = comment.post_id) )")
+cursor.execute(" SELECT * FROM nyt.likedby WHERE likedby.fb_id" +
+               " IN (SELECT comment.fb_id FROM nyt.comment, nyt.post" +
+               " WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%') " +
+               " AND (post.id = comment.post_id) )")
 
 row = cursor.fetchone()
 d = defaultdict(list)
@@ -53,10 +53,11 @@ while row is not None:
 
     if user_row not in d[row[1]]:
         d[row[1]].append(user_row)
+
     fdata.write(str(row[1]) + ' ' + str(user_row) + '\n')
     row = cursor.fetchone()
 
-print('last row is ' + str(row) + '\n')
+print('Last row is: ' + str(row) + '\n.')
 
 mat_size = k + 1
 d_likes = dict()
