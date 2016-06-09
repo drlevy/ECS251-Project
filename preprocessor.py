@@ -25,10 +25,12 @@ else:
     sys.exit()
 
 cursor = cnx.cursor()
-cursor.execute(" SELECT * FROM nyt.likedby WHERE likedby.fb_id" +
-               " IN (SELECT comment.fb_id FROM nyt.comment, nyt.post" +
-               " WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%') " +
-               " AND (post.id = comment.post_id) )")
+cursor.execute("SELECT * FROM nyt.likedby WHERE likedby.fb_id" +
+               "IN (SELECT comment.fb_id FROM nyt.comment, nyt.post" +
+               "WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%')" +
+               "AND (post.id = comment.post_id))")
+
+print('Database query complete.')
 
 row = cursor.fetchone()
 d = defaultdict(list)
