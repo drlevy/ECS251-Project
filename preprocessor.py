@@ -3,7 +3,6 @@ import mysql.connector
 import sys
 from collections import defaultdict
 
-
 fkey = open('user_keys_Snowden2.txt', 'w')
 fmat = open('adj_matrix_Snowden2.txt', 'w')
 fdata = open('fdata_Snowden2.txt', 'w')
@@ -25,12 +24,10 @@ else:
     sys.exit()
 
 cursor = cnx.cursor()
-cursor.execute("SELECT * FROM nyt.likedby WHERE likedby.fb_id" +
-               "IN (SELECT comment.fb_id FROM nyt.comment, nyt.post" +
-               "WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%')" +
+cursor.execute("SELECT * FROM nyt.likedby WHERE likedby.fb_id " +
+               "IN (SELECT comment.fb_id FROM nyt.comment, nyt.post " +
+               "WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%') " +
                "AND (post.id = comment.post_id))")
-
-print('Database query complete.')
 
 row = cursor.fetchone()
 d = defaultdict(list)
