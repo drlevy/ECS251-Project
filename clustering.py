@@ -5,6 +5,7 @@ G = nx.Graph()
 
 adjmat = open('adj_matrix_Snowden2.txt', 'r')
 
+print('Building graph ...')
 
 for line in adjmat:
     line = line.strip()
@@ -17,10 +18,11 @@ for line in adjmat:
 # nx.draw(G)
 # plt.show()
 
+print('Drawing graph ...')
 
 pos = nx.spring_layout(G)
 nx.draw(G, pos, node_color='#A0CBE2', edge_color='#BB0000', width=2, edge_cmap=plt.cm.Blues, with_labels=True)
-plt.show()
+plt.savefig('adj_matrix.png')
 # plt.savefig("graph.png", dpi=500, facecolor='w', edgecolor='w',orientation='portrait', papertype=None, format=None,transparent=False, bbox_inches=None, pad_inches=0.1)
 
 adjmat.close()
