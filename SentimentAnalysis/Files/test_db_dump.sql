@@ -37,6 +37,16 @@ CREATE TABLE `comment` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `comment`
+--
+
+LOCK TABLES `comment` WRITE;
+/*!40000 ALTER TABLE `comment` DISABLE KEYS */;
+INSERT INTO `comment` VALUES (1,1,0,1,'this is very bad',NULL,'0000-00-00 00:00:00'),(2,1,0,1,'this is a test. this test is very bad!',NULL,'0000-00-00 00:00:00'),(3,1,0,2,'this is the best ever',NULL,'0000-00-00 00:00:00'),(4,1,0,3,'i love this so much',NULL,'0000-00-00 00:00:00');
+/*!40000 ALTER TABLE `comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `fb_user`
 --
 
@@ -50,6 +60,16 @@ CREATE TABLE `fb_user` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `fb_user`
+--
+
+LOCK TABLES `fb_user` WRITE;
+/*!40000 ALTER TABLE `fb_user` DISABLE KEYS */;
+INSERT INTO `fb_user` VALUES (1,NULL,NULL),(2,NULL,NULL),(3,NULL,NULL);
+/*!40000 ALTER TABLE `fb_user` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `likedby`
@@ -69,6 +89,15 @@ CREATE TABLE `likedby` (
   KEY `comment_id` (`comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `likedby`
+--
+
+LOCK TABLES `likedby` WRITE;
+/*!40000 ALTER TABLE `likedby` DISABLE KEYS */;
+/*!40000 ALTER TABLE `likedby` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `post`
@@ -111,6 +140,16 @@ CREATE TABLE `post` (
   KEY `from_id_index` (`from_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `post`
+--
+
+LOCK TABLES `post` WRITE;
+/*!40000 ALTER TABLE `post` DISABLE KEYS */;
+INSERT INTO `post` VALUES (1,0,0,'test',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0000-00-00 00:00:00','0000-00-00 00:00:00',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `post` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -121,4 +160,4 @@ CREATE TABLE `post` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-11 19:35:37
+-- Dump completed on 2016-06-12 15:28:56
