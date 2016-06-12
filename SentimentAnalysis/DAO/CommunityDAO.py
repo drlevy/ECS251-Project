@@ -1,16 +1,26 @@
+from SentimentAnalysis.DAO.BaseDAO import BaseDAO
 from SentimentAnalysis.DO.CommunityDO import CommunityDO
 
 
-class CommunityDAO(object):
-    def __init__(self, config_file_path):
-        self.config_file_path = config_file_path
+class CommunityDAO(BaseDAO):
+    def __init__(self, community_data_file_path):
+        super(CommunityDAO, self).__init__(community_data_file_path)
 
-    def find_community_by_id(self, id):
-        community = CommunityDO(id)
-        # TODO implement this method
-        return community
+    def get_communities(self, users):
+        communities = {}
 
-    def update_community(self, id, community):
+        community_data = self._delimited_file_helper.get_rows_by_id()
+        for community_id in community_data:
+            community = CommunityDO(community_id)
+            community.impact_score = float(community_data[community_id][1])
+            for userId in users:
+                if users[userId].community_id == community_id:
+                    community.add_user(users[userId])
+            communities[community_id] = community
+
+        return communities
+
+    def update_communities(self, communities):
         # TODO implement this method
         return
 
