@@ -30,7 +30,7 @@ class DelimitedFileHelper(object):
                 quotechar=self.quote_char)
 
             for temp_row in reader:
-                tid = temp_row[0].title()
+                tid = temp_row[0]
                 if tid == id:
                     writer.writerow(row)
                 else:
@@ -48,7 +48,7 @@ class DelimitedFileHelper(object):
                 quotechar=self.quote_char)
 
             for row in reader:
-                tid = row[0].title()
+                tid = row[0]
                 if tid == id:
                     return row
 
@@ -73,7 +73,7 @@ class DelimitedFileHelper(object):
                 quotechar=self.quote_char)
             d = {}
             for row in reader:
-                d[row[0].title()] = {}
+                d[row[0]] = {}
                 for index in range(1, len(row)):
-                    d[row[0].title()][index] = row[index]
+                    d[row[0]][index] = row[index]
             return d
