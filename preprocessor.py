@@ -26,7 +26,7 @@ else:
 cursor = cnx.cursor()
 cursor.execute("SELECT * FROM nyt.likedby WHERE likedby.fb_id"
                + " IN (SELECT comment.fb_id FROM nyt.comment, nyt.post"
-               + " WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%') "
+               + " WHERE (post.message LIKE '%Snowden%') "
                + " AND (post.id = comment.post_id)) AND (likedby.comment_id=0)")
 
 row = cursor.fetchone()

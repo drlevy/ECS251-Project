@@ -58,19 +58,35 @@ for row in rows:
         cur_id += 1
     G.add_edge( FBid_nodeid_map[row[0]], FBid_nodeid_map[row[2]]);
 
-#dendro = community.generate_dendrogram( G )
-#parts = community.partition_at_level(dendro, 0)
-
-#parts = community.best_partition(G)
+## Associate each node with messages
 nx.set_node_attributes(G, "Label", nodeid_msg_map);
+
+## Community detection
+#parts = community.best_partition(G)
 #nx.set_node_attributes(G, "Modularity Class", parts);
 
+## betweenness_centrality
+btwncentral = nx.betweenness_centrality(G)
+nx.set_node_attributes(G, "Inbetweenness Centrality", btwncentral);
+
+## current_flow_closeness_centrality
+#c1= nx.current_flow_closeness_centrality(G)
+#nx.set_node_attributes(G, "current_flow_closeness_centrality", c1);
+
+## current_flow_betweenness_centrality
+#c2= nx.current_flow_betweenness_centrality(G)
+#nx.set_node_attributes(G, "current_flow_betweenness_centrality", c2);
+
+## load_centrality
+c3 = nx.load_centrality(G)
+nx.set_node_attributes(G, "load_centrality", c3);
 
 #output
-os.mkdir('gexf')
-os.chdir('gexf')
+if not os.path.exists('GraphI'):
+    os.makedirs('GraphI')
+os.chdir('GraphI')
 timestr = time.strftime("%Y%m%d-%H%M%S")
-output = postid+ "_t_ + timestr
+output = postid+ "_t_" + timestr
 nx.write_gexf(G,output + ".gexf")
 cursor.close()
 cnx.close()
