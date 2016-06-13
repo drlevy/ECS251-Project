@@ -34,6 +34,7 @@ class DomainController(object, metaclass=Singleton):
         self._communities = None
 
         self.aggregate_sentiment = 0
+        self.raw_aggregate_sentiment = 0
 
     def get_posts(self):
         if self._posts is None:
