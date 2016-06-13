@@ -1,6 +1,7 @@
 class CommentDO(object):
     def __init__(self, id):
         self.id = id
+        self.post_id = 0
         self.message = ''
         self.sentiment = 0
 
