@@ -1,5 +1,6 @@
 import configparser
 import mysql.connector
+import os
 import sys
 import community
 import networkx as nx
@@ -12,9 +13,9 @@ import csv
 #
 #
 
-postid = raw_input("Enter post_id in single quotes: ");
-mySQLquery = "SELECT likedby.fb_id,likedby.comment_id,comment.fb_id,comment.message FROM nyt.likedby, nyt.comment"+ " WHERE likedby.post_id = " + postid + " AND likedby.comment_id = comment.id"
-##print mySQLquery
+postid = raw_input("Enter post_id: ");
+mySQLquery = "SELECT likedby.fb_id,likedby.comment_id,comment.fb_id,comment.message FROM nyt.likedby, nyt.comment"+ " WHERE likedby.post_id = \'" + postid + "\' AND likedby.comment_id = comment.id"
+#print mySQLquery
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -33,12 +34,17 @@ else:
 cursor = cnx.cursor()
 cursor.execute(mySQLquery)
 
-G = nx.Graph()
+G = nx.DiGraph()
 FBid_nodeid_map = dict()
 nodeid_msg_map = dict()
 cur_id = 0
 
 rows = cursor.fetchall()
+
+if ( len(rows)==0):
+    print("No entries for " + postid)
+    sys.exit()
+
 for row in rows:
     if row[2] not in FBid_nodeid_map:
         FBid_nodeid_map[row[2]] = cur_id;
@@ -48,26 +54,32 @@ for row in rows:
 for row in rows:
     if row[0] not in FBid_nodeid_map:
         FBid_nodeid_map[row[0]] = cur_id;
-        nodeid_msg_map[cur_id] = ''
+        nodeid_msg_map[cur_id] = str(row[0])
         cur_id += 1
     G.add_edge( FBid_nodeid_map[row[0]], FBid_nodeid_map[row[2]]);
 
-parts = community.best_partition(G)
+#dendro = community.generate_dendrogram( G )
+#parts = community.partition_at_level(dendro, 0)
 
+#parts = community.best_partition(G)
 nx.set_node_attributes(G, "Label", nodeid_msg_map);
-nx.set_node_attributes(G, "Modularity Class", parts);
+#nx.set_node_attributes(G, "Modularity Class", parts);
 
+
+#output
+os.mkdir('gexf')
+os.chdir('gexf')
 timestr = time.strftime("%Y%m%d-%H%M%S")
-output = postid + " " + timestr
-nx.write_gexf(G, output + ".gexf")
+output = postid+ "_t_ + timestr
+nx.write_gexf(G,output + ".gexf")
 cursor.close()
 cnx.close()
 
 
-fout = open("Clusters_" + output+".txt",'w');
-for key, value in FBid_nodeid_map.iteritems():
-    fout.write(str(key) +':' + str(parts[value])+'\n')
-fout.close()
+##fout = open("Clusters_" + output+".txt",'w');
+##for key, value in FBid_nodeid_map.iteritems():
+##    fout.write(str(key) +':' + str(parts[value])+'\n')
+##fout.close()
 
 
 ##adjmatfile = open('Edges_10150316228114999.csv','rb');
