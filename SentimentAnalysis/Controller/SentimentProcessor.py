@@ -15,12 +15,18 @@ class SentimentProcessor(object, metaclass=Singleton):
                 self._domain_controller.get_users())
         community_sentiments = []
         raw_community_sentiments = []
+
+        total_impact_score = 0
+        for community_id in communities:
+            community = communities[community_id]
+            total_impact_score += community.impact_score
+
         for community_id in communities:
             community = communities[community_id]
             self.analyze_and_set_sentiment_for_community(community)
             raw_community_sentiments.append(community.sentiment)
             # use impact score to weigh sentiment
-            community_sentiments.append(community.sentiment*community.impact_score)
+            community_sentiments.append(community.sentiment*community.impact_score/total_impact_score)
         self._domain_controller.raw_aggregate_sentiment = np.mean(raw_community_sentiments)
         self._domain_controller.aggregate_sentiment = np.mean(community_sentiments)
 
