@@ -1,13 +1,11 @@
 import configparser
 import mysql.connector
 import sys
+import os
+import time
 from collections import defaultdict
-
-
-fkey = open('user_keys_Snowden2_small.txt', 'w')
-fmat = open('adj_matrix_Snowden2_small.txt', 'w')
-fdata = open('fdata_Snowden2_small.txt', 'w')
-
+import community
+import networkx as nx
 
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -29,59 +27,92 @@ cursor = cnx.cursor()
 cursor.execute("SELECT * FROM nyt.likedby WHERE likedby.fb_id"
                + " IN (SELECT comment.fb_id FROM nyt.comment, nyt.post"
                + " WHERE (post.message LIKE '%Snowden%' OR post.message LIKE '%Wikileaks%') "
-               + " AND (post.id = comment.post_id) )")
+               + " AND (post.id = comment.post_id)) AND (likedby.comment_id=0)")
 
 row = cursor.fetchone()
-d = defaultdict(list)
-cur_users = list()
-k = -1
+postid_likesgroup_map = defaultdict(list)
+nodeid_fbid_map= dict()
+fbid_nodeid_map = dict()
 
-#while row is not None:
-for l in range(1,200):
+k = 0
+while row is not None:
     ## fb_id
-    u = row[3]
+    fbid = row[3]
 
-    ## renaming the first fb_id to be 0th row
-    ## second fb_id that comes up is 1th row so on
-    if u not in cur_users:
-        cur_users.append(u)
+    if fbid not in fbid_nodeid_map:
+        fbid_nodeid_map[fbid]= k
+        nodeid_fbid_map[k] = fbid
+        nodeid = k
         k = k + 1
-        user_row = k
-        ## save the fb_id --> row i correspondence in a file
-        fkey.write(str(k) + ' ' + str(u) + '\n')
-    ## if fb_id has appear already, use the previously assigned number
     else:
-        user_row = cur_users.index(u)
-
-    if user_row not in d[row[1]]:
-        d[row[1]].append(user_row)
-    fdata.write(str(row[1]) + ' ' + str(user_row) + '\n')
+        nodeid = fbid_nodeid_map[fbid]
+        
+    postid_likesgroup_map[row[1]].append(nodeid)
     row = cursor.fetchone()
 
-print('last row is ' + str(row) + '\n')
+#  postid_likesgroup_map is a dictionary of lists of people
+#  that liked the same posts
 
-mat_size = k + 1
+
+mat_size = k
 d_likes = dict()
-
-#  d is a dictionary of lists of people that liked the same posts
-for post, users in d.iteritems():
+# building up adjacency matrix
+for post, users in postid_likesgroup_map.iteritems():
     for i in users:
         for j in users:
+            if i==j:
+                continue
             idx = i*mat_size +j
             if ( idx not in d_likes):
                 d_likes[idx] = 1;
             else:
                 d_likes[idx] += 1;
 
+
+# Building up undirected weighted graph
+G = nx.Graph()
+for key,value in nodeid_fbid_map.iteritems():
+    G.add_node(key, Label=str(value))
+
 for key, value in d_likes.iteritems():
-    if 
     j = key % mat_size
     i = key / mat_size
-    ## sparse matrix notation: i j value
-    fmat.write(str(i) + ' ' + str(j) + ' ' + str(value) + '\n')
+    if i < j:  #symmetric
+        G.add_edge( i, j, weight=value)
 
-fkey.close()
-fmat.close();
-fdata.close();
+# Community Detection
+parts = community.best_partition(G)
+nx.set_node_attributes(G, "Modularity Class", parts);
+#nx.set_node_attributes(G, "Label", nodeid_fbid_map);
+
+# output graph file
+    
+#os.chdir('GraphIII')
+timestr = time.strftime("%Y%m%d-%H%M%S")
+output =  "t_" + timestr
+nx.write_gexf(G,output + ".gexf")
+
+# output fbid to community id
+fout = open("Clusters_" + output + ".txt",'w');
+for key, value in fbid_nodeid_map.iteritems():
+    fout.write(str(key) + ' ' + str(parts[value])+'\n')
+fout.close()
+
+# output community ranking
+fout2 = open("ComImpactScore_" + output + ".txt",'w');
+com_ranks = dict()
+for key, value in parts.iteritems():
+    if value not in com_ranks:
+        com_ranks[value] = 1
+    else:
+        com_ranks[value] += 1
+for key, value in com_ranks.iteritems():
+    fout2.write(str(key) + ' ' + str(value)+'\n')
+fout2.close()
+
+
+#output statistics of run
+#fstats = open
+
 cursor.close()
 cnx.close()

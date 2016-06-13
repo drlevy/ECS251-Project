@@ -17,6 +17,8 @@ class GraphGenerator(object, metaclass=Singleton):
         communities = dc.get_communities(users)
 
         # TODO use networkx to write out 'community_graph.gexf'
-        # nx.cool_stuff.doit()
+
+
+
 
         return
