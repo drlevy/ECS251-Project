@@ -9,8 +9,6 @@ class SentimentProcessor(object, metaclass=Singleton):
     def __init__(self):
         self._domain_controller = DomainController()
 
-    # TODO process sentiment for topic
-
     def analyze_and_set_sentiments(self):
         communities = \
             self._domain_controller.get_communities(
@@ -32,16 +30,28 @@ class SentimentProcessor(object, metaclass=Singleton):
 
     def analyze_and_set_sentiment_for_user(self, user):
         # find sentiment for each user comment
+        posts = self._domain_controller.get_posts()
         comment_sentiments = []
         for comment in user.comments:
-            sentences = tokenize.sent_tokenize(comment.message)
-            sid = SentimentIntensityAnalyzer()
-            sentence_sentiments = []
-            for sentence in sentences:
-                ss = sid.polarity_scores(sentence)
-                sentence_sentiments.append(ss['compound'])
-            comment.sentiment = np.mean(sentence_sentiments)
-            comment_sentiments.append(comment.sentiment)
+            post = posts[comment.post_id]
+            self.analyze_and_set_sentiment_for_post(post)
+            self.analyze_and_set_sentiment_for_comment(comment)
+            # scale comment sentiment by post sentiment
+            comment_sentiments.append(comment.sentiment*post.sentiment)
         # aggregate user sentiment
         user.sentiment = np.mean(comment_sentiments)
 
+    def analyze_and_set_sentiment_for_post(self, post):
+        post.sentiment = self.avg_message_sentiment_helper(post.message)
+
+    def analyze_and_set_sentiment_for_comment(self, comment):
+        comment.sentiment = self.avg_message_sentiment_helper(comment.message)
+
+    def avg_message_sentiment_helper(self, message):
+        sentences = tokenize.sent_tokenize(message)
+        sid = SentimentIntensityAnalyzer()
+        sentence_sentiments = []
+        for sentence in sentences:
+            ss = sid.polarity_scores(sentence)
+            sentence_sentiments.append(ss['compound'])
+        return np.mean(sentence_sentiments)
