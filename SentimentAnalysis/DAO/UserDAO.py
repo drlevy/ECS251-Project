@@ -39,7 +39,7 @@ class UserDAO(BaseDAO):
         # fetch comments
         comment_sql_query =\
             'select comment.id, comment.fb_id, comment.message, comment.post_id from {0}.comment '.format(self._sql_db) +\
-            'where comment.post_id in (' +\
+            'where comment.fb_id in (' +\
             'select comment.fb_id from {0}.comment, {0}.post '.format(self._sql_db) +\
             'where (' + post_sql_criteria + ')) ' +\
             'and (' + user_sql_criteria + ')'
