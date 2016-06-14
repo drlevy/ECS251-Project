@@ -1,7 +1,6 @@
 import configparser
 import mysql.connector
 import sys
-import os
 import time
 from collections import defaultdict
 import community
@@ -57,7 +56,7 @@ while row is not None:
 mat_size = k
 d_likes = dict()
 # building up adjacency matrix
-for post, users in postid_likesgroup_map.iteritems():
+for post, users in postid_likesgroup_map.items():
     for i in users:
         for j in users:
             if i==j:
@@ -71,10 +70,10 @@ for post, users in postid_likesgroup_map.iteritems():
 
 # Building up undirected weighted graph
 G = nx.Graph()
-for key,value in nodeid_fbid_map.iteritems():
+for key,value in nodeid_fbid_map.items():
     G.add_node(key, Label=str(value))
 
-for key, value in d_likes.iteritems():
+for key, value in d_likes.items():
     j = key % mat_size
     i = key / mat_size
     if i < j:  #symmetric
@@ -94,19 +93,19 @@ nx.write_gexf(G,output + ".gexf")
 
 # output fbid to community id
 fout = open("Clusters_" + output + ".txt",'w');
-for key, value in fbid_nodeid_map.iteritems():
+for key, value in fbid_nodeid_map.items():
     fout.write(str(key) + ' ' + str(parts[value])+'\n')
 fout.close()
 
 # output community ranking
 fout2 = open("ComImpactScore_" + output + ".txt",'w');
 com_ranks = dict()
-for key, value in parts.iteritems():
+for key, value in parts.items():
     if value not in com_ranks:
         com_ranks[value] = 1
     else:
         com_ranks[value] += 1
-for key, value in com_ranks.iteritems():
+for key, value in com_ranks.items():
     fout2.write(str(key) + ' ' + str(value)+'\n')
 fout2.close()
 
