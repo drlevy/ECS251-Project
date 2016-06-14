@@ -8,9 +8,8 @@ lounguyen@ucdavis.edu
 drlevy@ucdavis.edu
 
 Scripts:
-Clustering is done with 
-"preprocessor.py" 
-Output: 
+Clustering is done with "preprocessor.py" 
+ Output: 
   - Clusters_  text file with <fb_id> <community_id>
   - ComImpactScore_  text file <community_id> <impact ranking>
 
